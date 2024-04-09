@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script defer src="./main.js"></script>
+</head>
+<body>
+<h1>Bestilling av kinobilletter</h1>
+<form id="Form" action="/">
+    <div>
+        <label for='Film'>Velg film:</label>
+        <select name='Filmer' id='Film'>
+            <option value='Velg film'>Velg film her</option>
+            <option value='Grusomme meg 2'>Grusomme meg 2</option>
+            <option value='Rebel Moon'>Rebel Moon</option>
+            <option value='Dune'>Dune</option>
+        </select>
+        <div class='error' style ="color : red;"></div>
+    </div>
+    <div>
+        <label for='Antall'>Antall</label>
+        <input type="number" id='Antall' name='Antall' min="1" />
+        <div class='error' style ="color : red;"></div>
+    </div>
+    <div>
+        <label for='Fornavn'>Fornavn</label>
+        <input type ="text" id='Fornavn' name='Fornavn' />
+        <div class='error' style ="color : red;"></div>
+    </div>
+    <div>
+        <label for='Etternavn'>Etternavn</label>
+        <input type ="text" id='Etternavn' name='Etternavn'   />
+        <div class='error' style ="color : red;"></div>
+    </div>
+    <div>
+        <label for='Telefonnr'>Telefonnr</label>
+        <input type ="tel" id='Telefonnr' name='Telefonnr' maxlength="11"  />
+        <div class='error' style ="color : red;"></div>
+    </div>
+    <div>
+        <label for='Epost'>Epost</label>
+        <input type ="email" id='Epost' name='Epost'  />
+        <div class='error' style ="color : red;"></div>
+    </div>
+    <div>
+        <button type='submit' id = "submitknapp">Kjøp billett</button>
+
+    </div>
+
+</form>
+
+<h2>Alle Billetter</h2>
+
+<table>
+    <thead>
+    <tr>
+        <th>Film</th>
+        <th>Antall</th>
+        <th>Fornavn</th>
+        <th>Etternavn</th>
+        <th>Telefonnr</th>
+        <th>Epost</th>
+    </tr>
+    </thead>
+    <tbody id="billett-table-body"></tbody>
+</table>
+
+<div>
+    <button id ="button">Slett alle billettene</button>
+</div>
+
+</body>
+</html>
