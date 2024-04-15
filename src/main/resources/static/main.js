@@ -207,10 +207,10 @@ function getrequest() {
                     `
                     }
                     if(post && post.length > 0){
-                        console.log("Data returned data", post)
+                        console.log("Post returned data", post)
                         table.innerHTML = billett;
                     } else{
-                        console.log("Data returned null", post);
+                        console.log("Post returned null", post);
                     }
 
 
@@ -225,11 +225,7 @@ function getrequest() {
     })
 
 }
-getrequest().then(function(post) { // Bruk av callback, async/await eller promise. i dette tilfellet promise
-    console.log("Fikk første data; ", post);
-}).catch(function(error) {
-    console.error("Feil ved innhenting av data; ", error);
-});
+
 function getclear() {
     return new Promise(function(resolve, reject) {
         let xhttp = new XMLHttpRequest();
