@@ -5,11 +5,11 @@ const Etternavn = document.getElementById("Etternavn");
 const Telefonnr = document.getElementById("Telefonnr");
 const Epost = document.getElementById("Epost");
 const table = document.getElementById("billett-table-body")
+const Form = document.getElementById("Form")
 Form.addEventListener("submit", async (e) => {
     e.preventDefault();
     o = 0;
-    validateInputs();
-    table.innerHTML = "";
+    await validateInputs();
     if (o === 1) {
     console.log("Vi hadde en error");
     } else{
@@ -20,9 +20,11 @@ Form.addEventListener("submit", async (e) => {
             etternavn : Etternavn.value,
             telefonnr : Telefonnr.value ,
             epost : Epost.value
+
         }
+
         try {
-            await postrequest(Listen);
+           await postrequest(Listen);
         }catch (error){
         console.log("Try post request ", error);
         }
@@ -31,6 +33,7 @@ Form.addEventListener("submit", async (e) => {
     }
     try {
         await getrequest();
+
     }catch (error){
         console.log("Try get request ", error);
     }
@@ -154,70 +157,97 @@ const validateInputs = async () => {
 
 }
 function postrequest(post) {
-    const xhttp = new XMLHttpRequest();
-    xhttp.open("POST", "/lagreData", true);
-    xhttp.setRequestHeader("Content-Type", "application/json")
-    xhttp.onreadystatechange = function() {
-        if( xhttp.readyState===4 ){
-            if (xhttp.status===200){
-                console.log("Lagret data, ", xhttp.responseText)
-            } else{
-                console.error("Data ikke lagret ", xhttp.status)
+    return new Promise(function(resolve, reject) {
+        let xhttp = new XMLHttpRequest();
+        xhttp.open("POST", "/lagreData", true);
+        xhttp.setRequestHeader("Content-Type", "application/json")
+        xhttp.onreadystatechange = function() {
+            if( xhttp.readyState===4 ){
+                if (xhttp.status===200){
+                    document.getElementById("Form").reset();
+                    console.log("Data lagret")
+                    resolve()
+                } else{
+                    console.error("Data ikke lagret ")
+                    reject(xhttp.status)
+
+                }
             }
+
+
         }
+        xhttp.send(JSON.stringify(post));
 
+    })
 
-    }
-    xhttp.send(JSON.stringify(post));
 }
+
+
 function getrequest() {
-    const xhttp = new XMLHttpRequest();
-    xhttp.open("GET", "/getData", true);
-    xhttp.onreadystatechange = function() {
-        if( xhttp.readyState===4 ){
-            if (xhttp.status===200){
-                const data = JSON.parse(xhttp.responseText)
-                let billett = "";
-                for (let i = 0; i < data.length ; i++) {
-                    billett += `
+    return new Promise(function(resolve, reject) {
+        let xhttp = new XMLHttpRequest();
+        xhttp.open("GET", "/getData", true);
+        xhttp.onreadystatechange = function() {
+            if( xhttp.readyState===4 ){
+                if (xhttp.status===200){
+                    let post = JSON.parse(xhttp.responseText);
+                    console.log("Getrequest fikk data")
+                    resolve(post)
+                    let billett = "";
+                    for (let i = 0; i < post.length ; i++) {
+                        billett += `
                     <tr>
-                        <td>${data[i].film}</td>
-                        <td>${data[i].antall}</td>
-                        <td>${data[i].fornavn}</td>
-                        <td>${data[i].etternavn}</td>
-                        <td>${data[i].telefonnr}</td>
-                        <td>${data[i].epost}</td>
+                        <td>${post[i].film}</td>
+                        <td>${post[i].antall}</td>
+                        <td>${post[i].fornavn}</td>
+                        <td>${post[i].etternavn}</td>
+                        <td>${post[i].telefonnr}</td>
+                        <td>${post[i].epost}</td>
                     </tr>
                     `
-                }
-                if(data && data.length > 0){
-                    console.log("Data returned data", data)
-                    table.innerHTML = billett;
+                    }
+                    if(post && post.length > 0){
+                        console.log("Data returned data", post)
+                        table.innerHTML = billett;
+                    } else{
+                        console.log("Data returned null", post);
+                    }
+
+
                 } else{
-                    console.log("Data returned null", data);
+                    console.error("Data ikke lagret ", xhttp.status)
+                    reject(xhttp.status)
                 }
-
-
-            } else{
-                console.error("Data ikke lagret ", xhttp.status)
             }
-        }
 
-    }
-    xhttp.send();
+        }
+        xhttp.send();
+    })
+
 }
+getrequest().then(function(post) { // Bruk av callback, async/await eller promise. i dette tilfellet promise
+    console.log("Fikk første data; ", post);
+}).catch(function(error) {
+    console.error("Feil ved innhenting av data; ", error);
+});
 function getclear() {
-    const xhttp = new XMLHttpRequest();
-    xhttp.open("GET", "/clearData", true);
-    xhttp.onreadystatechange = function() {
-        if( xhttp.readyState===4 ){
-            if (xhttp.status===200){
-                table.innerHTML = "";
-            } else{
-                console.error("Data ikke slettet ", xhttp.status)
+    return new Promise(function(resolve, reject) {
+        let xhttp = new XMLHttpRequest();
+        xhttp.open("GET", "/clearData", true);
+        xhttp.onreadystatechange = function() {
+            if( xhttp.readyState===4 ){
+                if (xhttp.status===200){
+                    table.innerHTML = "";
+                    console.log("Data slettet");
+                    resolve()
+                } else{
+                    console.error("Data ikke slettet ");
+                    reject(xhttp.status)
+                }
             }
-        }
 
-    }
-    xhttp.send();
+        }
+        xhttp.send()
+    })
+
 }
